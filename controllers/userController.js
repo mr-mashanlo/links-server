@@ -7,7 +7,7 @@ class UserController {
     try {
       const userID = req.params.id;
       const user = await UserModel.findOne( { _id: userID } ).select( '-password' );
-      return res.send( user );
+      return res.json( user );
     } catch ( error ) {
       next( error );
     }
@@ -18,7 +18,7 @@ class UserController {
       const userID = req.params.id;
       const updates = req.body.updates;
       const user = await UserModel.findOneAndUpdate( { _id: userID }, { $set: { ...updates } }, { new: true } );
-      return res.send( user );
+      return res.json( user );
     } catch ( error ) {
       next( error );
     }
@@ -29,7 +29,7 @@ class UserController {
       const id = req.params.id;
       await UserModel.deleteOne( { _id: id } );
       await TokenModel.deleteOne( { user: id } );
-      return res.send( { success: true, msg: 'Deleted' } );
+      return res.json( { success: true, msg: 'Deleted' } );
     } catch ( error ) {
       next( error );
     }

@@ -24,7 +24,7 @@ class AuthController {
 
       const tokens = await TokenService.create( user );
       res.cookie( 'AToken', tokens.AToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'None', secure: true } );
-      return res.send( { id: user._id, token: tokens.AToken } );
+      return res.json( { id: user._id, token: tokens.AToken } );
     } catch ( error ) {
       next( error );
     }
@@ -52,7 +52,7 @@ class AuthController {
       const user = await UserModel.create( { email, password: hashPassword } );
       const tokens = await TokenService.create( user );
       res.cookie( 'AToken', tokens.AToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'None', secure: true } );
-      return res.send( { id: user._id, token: tokens.AToken } );
+      return res.json( { id: user._id, token: tokens.AToken } );
     } catch ( error ) {
       next( error );
     }
@@ -62,7 +62,7 @@ class AuthController {
     try {
       await TokenModel.deleteOne( { user: req.me.id } );
       res.clearCookie( 'AToken' );
-      return res.send( { success: true, msg: 'Logouted' } );
+      return res.json( { success: true, msg: 'Logouted' } );
     } catch ( error ) {
       next( error );
     }
@@ -73,7 +73,7 @@ class AuthController {
       await UserModel.deleteOne( { _id: req.me.id } );
       await TokenModel.deleteOne( { user: req.me.id } );
       res.clearCookie( 'AToken' );
-      return res.send( { success: true, msg: 'Deleted' } );
+      return res.json( { success: true, msg: 'Deleted' } );
     } catch ( error ) {
       next( error );
     }
@@ -86,7 +86,7 @@ class AuthController {
       const user = jwt.verify( tokens.RToken, process.env.REFRESH_KEY );
       const updatedTokens = await TokenService.create( user );
       res.cookie( 'AToken', updatedTokens.AToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'None', secure: true } );
-      return res.send( { ...updatedTokens } );
+      return res.json( { ...updatedTokens } );
     } catch ( error ) {
       next( error );
     }

@@ -8,7 +8,11 @@ class MediaController {
     try {
       const id = req.params.id;
       const image = await MediaModel.findOne( { user: id } );
-      return res.send( image );
+      if ( image ) {
+        return res.json( image );
+      } else {
+        return res.json( {} );
+      }
     } catch ( error ) {
       next( error );
     }
@@ -27,7 +31,7 @@ class MediaController {
       } else {
         await MediaModel.create( { user: id, name: req.file.filename, url: fileURL } );
       }
-      return res.send( { success: true, msg: `File uploaded: ${req.file.filename}` } );
+      return res.json( { success: true, msg: `File uploaded: ${req.file.filename}` } );
     } catch ( error ) {
       next( error );
     }
@@ -37,7 +41,7 @@ class MediaController {
     try {
       const id = req.params.id;
       const image = await MediaModel.findOne( { _id: id } );
-      if ( !image ) { return res.send( { success: false, msg: 'Image not found.' } ); }
+      if ( !image ) { return res.json( { success: false, msg: 'Image not found.' } ); }
 
       const filename = image.name;
       const filePath = path.join( __dirname, '../uploads/', filename );
@@ -45,7 +49,7 @@ class MediaController {
 
       fs.unlink( filePath, ( err ) => {
         if ( err ) { return res.status( 400 ).send( 'File not found.' ); }
-        return res.send( { success: true, msg: `File ${filename} deleted successfully.` } );
+        return res.json( { success: true, msg: `File ${filename} deleted successfully.` } );
       } );
     } catch ( error ) {
       next( error );
